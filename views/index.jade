@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  form(action="/instagram/web/feed", method="post") 
+    br
+    br
+    input(type="text", placeholder="Username", name="username")
+    br
+    br
+    input(type="password", placeholder="Password", name="password")
+    br
+    br
+    input(type="text", placeholder="Link Gambar", name="picture")
+    br
+    br
+    input(type="text", placeholder="Link Gambar 2", name="picture")
+    br
+    br
+    textarea(name="caption", cols="30", rows="10", placeholder="Caption")
+    br
+    br
+    input(type="submit", value="Submit")
