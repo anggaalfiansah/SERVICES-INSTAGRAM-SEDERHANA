@@ -1,5 +1,10 @@
 var express = require("express");
-const { uploadFeedWeb, uploadFeedAPI, uploadStoryAPI } = require("../api");
+const {
+  uploadFeedWeb,
+  uploadFeedAlbumAPI,
+  uploadStoryAPI,
+  uploadFeedSingleAPI,
+} = require("../api");
 var router = express.Router();
 
 /* Post Feed With Caption */
@@ -7,7 +12,7 @@ router.post("/feed", async (req, res) => {
   const { username, password, picture, namaProduk, harga, variant } = req.body;
   if (username !== "" && password !== "") {
     if (picture && picture.length > 1 && picture !== "") {
-      await uploadFeedAPI(
+      await uploadFeedAlbumAPI(
         username,
         password,
         picture,
@@ -33,7 +38,31 @@ router.post("/feed", async (req, res) => {
         }
       );
     } else if (picture.length == 1) {
-      res.send({ message: "harap masukan gambar lebih dari 1" });
+      await uploadFeedSingleAPI(
+        username,
+        password,
+        picture[0],
+        namaProduk,
+        harga,
+        variant,
+        (upload) => {
+          console.log(upload);
+          switch (upload) {
+            case "username/password salah":
+              res.send({ message: "username/password salah" });
+              break;
+            case "error":
+              res.send({
+                message:
+                  "Terjadi kesalahan harap periksa kembali data yang dikirimkan",
+              });
+              break;
+            default:
+              res.send(upload);
+              break;
+          }
+        }
+      );
     } else res.send({ message: "harap masukan gambar" });
   } else {
     res.send({ message: "harap masukan username & password" });

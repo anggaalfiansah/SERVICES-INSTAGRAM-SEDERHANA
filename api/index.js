@@ -2,7 +2,7 @@ const { IgApiClient, IgCheckpointError } = require("instagram-private-api");
 var { get } = require("request-promise");
 const sharp = require("sharp");
 
-exports.uploadFeedAPI = async (
+exports.uploadFeedAlbumAPI = async (
   username,
   password,
   picture,
@@ -54,7 +54,7 @@ exports.uploadFeedAPI = async (
         });
         const logout = await ig.account.logout();
         console.log("Status Logout " + JSON.stringify(logout));
-        cb({data : publish, });
+        cb({ data: publish });
       } catch (error) {
         const logout = await ig.account.logout();
         console.log("Status Logout " + JSON.stringify(logout));
@@ -65,6 +65,58 @@ exports.uploadFeedAPI = async (
       const logout = await ig.account.logout();
       console.log("Status Logout " + JSON.stringify(logout));
       cb({ message: "gambar kurang, gambar error " + gambarError });
+    }
+  }
+};
+
+exports.uploadFeedSingleAPI = async (
+  username,
+  password,
+  picture,
+  namaProduk,
+  harga,
+  variant,
+  cb
+) => {
+  console.log(picture);
+  let variantList = "";
+  await Promise.all(
+    variant.map(async (item) => {
+      variantList += `-${item}\r\n`;
+    })
+  );
+  const caption = `OPEN ORDER !!!\r\nNama Produk: ${namaProduk}\r\nHarga: ${harga}\r\nVarian:\r\n${variantList}Silahkan diorder`;
+  const ig = new IgApiClient();
+  ig.state.generateDevice(username);
+  const auth = await ig.account
+    .login(username, password)
+    .catch(() => cb("username/password salah"));
+  if (auth) {
+    const imageBuffer = await get({
+      url: picture,
+      encoding: null, // this is required, only this way a Buffer is returned
+    }).catch(async () => {
+      cb({message: "url invalid"})
+    });
+    if (imageBuffer) {
+      const gambar = await sharp(imageBuffer)
+        .resize({ height: 800, width: 800 })
+        .toFormat("jpeg")
+        .toBuffer();
+      try {
+        const publish = await ig.publish.photo({
+          file: gambar, // image buffer, you also can specify image from your disk using fs
+          caption: caption, // nice caption (optional)
+        });
+        const logout = await ig.account.logout();
+        console.log("Status Logout " + JSON.stringify(logout));
+        cb({ data: publish });
+      } catch (error) {
+        const logout = await ig.account.logout();
+        console.log("Status Logout " + JSON.stringify(logout));
+        console.log(error);
+        cb("error");
+      }
     }
   }
 };
