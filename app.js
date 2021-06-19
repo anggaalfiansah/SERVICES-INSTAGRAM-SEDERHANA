@@ -6,7 +6,7 @@ var logger = require('morgan');
 var cors = require("cors");
 
 var indexRouter = require('./routes/index');
-var instagramRouter = require('./routes/instagram');
+var instagramRouter = require('./routes/Instagram');
 
 var app = express();
 
