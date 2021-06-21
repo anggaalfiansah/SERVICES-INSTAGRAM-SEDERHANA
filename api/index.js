@@ -96,7 +96,7 @@ exports.uploadFeedSingleAPI = async (
       url: picture,
       encoding: null, // this is required, only this way a Buffer is returned
     }).catch(async () => {
-      cb({message: "url invalid"})
+      cb({ message: "url invalid" });
     });
     if (imageBuffer) {
       const gambar = await sharp(imageBuffer)
@@ -154,6 +154,7 @@ exports.uploadFeedWeb = async (username, password, picture, caption, cb) => {
     ig.state.generateDevice(username);
     const auth = await ig.account.login(username, password);
     console.log(auth);
+    let albumItem = [];
     if (auth) {
       await Promise.all(
         picture.map(async (item) => {
