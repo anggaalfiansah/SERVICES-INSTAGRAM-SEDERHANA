@@ -2,6 +2,19 @@ const { IgApiClient, IgCheckpointError } = require("instagram-private-api");
 var { get } = require("request-promise");
 const sharp = require("sharp");
 
+exports.cekLoginAPI = async (username, password, cb) => {
+  const ig = new IgApiClient();
+  ig.state.generateDevice(username);
+  const auth = await ig.account
+    .login(username, password)
+    .catch(() => cb("username/password salah"));
+  if (auth) {
+    const logout = await ig.account.logout();
+    console.log("Status Logout " + JSON.stringify(logout));
+    cb("Instagram Tersambung");
+  }
+};
+
 exports.uploadFeedAlbumAPI = async (
   username,
   password,
@@ -54,7 +67,7 @@ exports.uploadFeedAlbumAPI = async (
         });
         const logout = await ig.account.logout();
         console.log("Status Logout " + JSON.stringify(logout));
-        cb({ data: publish });
+        cb({ message: "Upload Feed Sukses", data: publish });
       } catch (error) {
         const logout = await ig.account.logout();
         console.log("Status Logout " + JSON.stringify(logout));
@@ -110,7 +123,7 @@ exports.uploadFeedSingleAPI = async (
         });
         const logout = await ig.account.logout();
         console.log("Status Logout " + JSON.stringify(logout));
-        cb({ data: publish });
+        cb({ message: "Upload Feed Sukses", data: publish });
       } catch (error) {
         const logout = await ig.account.logout();
         console.log("Status Logout " + JSON.stringify(logout));
@@ -140,7 +153,7 @@ exports.uploadStoryAPI = async (username, password, picture, cb) => {
       const launch = await ig.publish.story({ file: gambar });
       const logout = await ig.account.logout();
       console.log("Status Logout " + JSON.stringify(logout));
-      cb(launch);
+      cb({ message: "Upload Story Sukses", data : launch });
     }
   } catch (error) {
     console.log(error);

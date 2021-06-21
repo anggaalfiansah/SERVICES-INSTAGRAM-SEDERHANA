@@ -4,10 +4,20 @@ const {
   uploadFeedAlbumAPI,
   uploadStoryAPI,
   uploadFeedSingleAPI,
+  cekLoginAPI,
 } = require("../api");
 var router = express.Router();
 
-/* Post Feed With Caption */
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  console.log(req.body)
+  if (username !== "" && password !== "") {
+    cekLoginAPI(username, password, (login) => res.send({ message: login }));
+  } else {
+    res.send({ message: "harap masukan username & password" });
+  }
+});
+
 router.post("/feed", async (req, res) => {
   const { username, password, picture, namaProduk, harga, variant } = req.body;
   if (username !== "" && password !== "") {
