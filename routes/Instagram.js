@@ -10,9 +10,42 @@ var router = express.Router();
 
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  console.log(req.body)
+  console.log(req.body);
   if (username !== "" && password !== "") {
-    cekLoginAPI(username, password, (login) => res.send({ message: login }));
+    cekLoginAPI(username, password, (login) => {
+      switch (login) {
+        case "IgLoginTwoFactorRequiredError: POST /api/v1/accounts/login/ - 400 Bad Request; ":
+          res.send({
+            message: "Harap matikan Autentikasi Dua Faktor",
+          });
+          break;
+        case "IgResponseError: POST /api/v1/accounts/login/ - 400 Bad Request; Please wait a few minutes before you try again.":
+          res.send({
+            message:
+              "Harap matikan Autentikasi Dua Faktor dan tunggu beberapa saat sebelum kembali mencoba",
+          });
+          break;
+        case "IgResponseError: POST /api/v1/accounts/login/ - 400 Bad Request; You entered the wrong code too many times. Wait a few minutes and try again.":
+          res.send({
+            message:
+              "Harap matikan Autentikasi Dua Faktor dan tunggu beberapa saat sebelum kembali mencoba, atau akun anda akan terkunci karena terlalu banyak percobaan login",
+          });
+          break;
+        case "IgLoginBadPasswordError: POST /api/v1/accounts/login/ - 400 Bad Request; The password you entered is incorrect. Please try again.":
+          res.send({
+            message: "username/password salah",
+          });
+          break;
+        case "IgLoginInvalidUserError: POST /api/v1/accounts/login/ - 400 Bad Request; The username you entered doesn't appear to belong to an account. Please check your username and try again.":
+          res.send({
+            message: "username/password salah",
+          });
+          break;
+        default:
+          res.send(login);
+          break;
+      }
+    });
   } else {
     res.send({ message: "harap masukan username & password" });
   }
@@ -32,8 +65,32 @@ router.post("/feed", async (req, res) => {
         (upload) => {
           console.log(upload);
           switch (upload) {
-            case "username/password salah":
-              res.send({ message: "username/password salah" });
+            case "IgLoginTwoFactorRequiredError: POST /api/v1/accounts/login/ - 400 Bad Request; ":
+              res.send({
+                message: "Harap matikan Autentikasi Dua Faktor",
+              });
+              break;
+            case "IgResponseError: POST /api/v1/accounts/login/ - 400 Bad Request; Please wait a few minutes before you try again.":
+              res.send({
+                message:
+                  "Harap matikan Autentikasi Dua Faktor dan tunggu beberapa saat sebelum kembali mencoba",
+              });
+              break;
+            case "IgResponseError: POST /api/v1/accounts/login/ - 400 Bad Request; You entered the wrong code too many times. Wait a few minutes and try again.":
+              res.send({
+                message:
+                  "Harap matikan Autentikasi Dua Faktor dan tunggu beberapa saat sebelum kembali mencoba, atau akun anda akan terkunci karena terlalu banyak percobaan login",
+              });
+              break;
+            case "IgLoginBadPasswordError: POST /api/v1/accounts/login/ - 400 Bad Request; The password you entered is incorrect. Please try again.":
+              res.send({
+                message: "username/password salah",
+              });
+              break;
+            case "IgLoginInvalidUserError: POST /api/v1/accounts/login/ - 400 Bad Request; The username you entered doesn't appear to belong to an account. Please check your username and try again.":
+              res.send({
+                message: "username/password salah",
+              });
               break;
             case "error":
               res.send({
@@ -67,6 +124,11 @@ router.post("/feed", async (req, res) => {
                   "Terjadi kesalahan harap periksa kembali data yang dikirimkan",
               });
               break;
+            case "IgResponseError: POST /api/v1/accounts/login/ - 400 Bad Request; Please wait a few minutes before you try again.":
+              res.send({
+                message: "Harap matikan Autentikasi Dua Faktor",
+              });
+              break;
             default:
               res.send(upload);
               break;
@@ -98,6 +160,11 @@ router.post("/story", async (req, res) => {
             });
             break;
           default:
+          case "IgResponseError: POST /api/v1/accounts/login/ - 400 Bad Request; Please wait a few minutes before you try again.":
+            res.send({
+              message: "Harap matikan Autentikasi Dua Faktor",
+            });
+            break;
             res.send(upload);
             break;
         }

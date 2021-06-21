@@ -7,11 +7,11 @@ exports.cekLoginAPI = async (username, password, cb) => {
   ig.state.generateDevice(username);
   const auth = await ig.account
     .login(username, password)
-    .catch(() => cb("username/password salah"));
+    .catch((err) => cb(`${err}`));
   if (auth) {
     const logout = await ig.account.logout();
     console.log("Status Logout " + JSON.stringify(logout));
-    cb("Instagram Tersambung");
+    cb({ message: "Instagram tersambung", data: auth });
   }
 };
 
@@ -36,7 +36,7 @@ exports.uploadFeedAlbumAPI = async (
   ig.state.generateDevice(username);
   const auth = await ig.account
     .login(username, password)
-    .catch(() => cb("username/password salah"));
+    .catch((err) => cb(`${err}`));
   if (auth) {
     const albumItem = [];
     let gambarError = 0;
@@ -103,7 +103,7 @@ exports.uploadFeedSingleAPI = async (
   ig.state.generateDevice(username);
   const auth = await ig.account
     .login(username, password)
-    .catch(() => cb("username/password salah"));
+    .catch((err) => cb(`${err}`));
   if (auth) {
     const imageBuffer = await get({
       url: picture,
@@ -140,7 +140,7 @@ exports.uploadStoryAPI = async (username, password, picture, cb) => {
     ig.state.generateDevice(username);
     const auth = await ig.account
       .login(username, password)
-      .catch(() => cb("username/password salah"));
+      .catch((err) => cb(`${err}`));
     if (auth) {
       const imageBuffer = await get({
         url: picture,
@@ -153,7 +153,7 @@ exports.uploadStoryAPI = async (username, password, picture, cb) => {
       const launch = await ig.publish.story({ file: gambar });
       const logout = await ig.account.logout();
       console.log("Status Logout " + JSON.stringify(logout));
-      cb({ message: "Upload Story Sukses", data : launch });
+      cb({ message: "Upload Story Sukses", data: launch });
     }
   } catch (error) {
     console.log(error);
