@@ -1,6 +1,6 @@
 const { IgApiClient } = require("instagram-private-api");
 const facebookLogin = require("ts-messenger-api").default;
-const login = require("facebook-chat-api");
+const facebookLogin2 = require("facebook-chat-api");
 var { get } = require("request-promise");
 const sharp = require("sharp");
 
@@ -209,7 +209,7 @@ exports.uploadFeedWeb = async (username, password, picture, caption, cb) => {
 };
 
 // Facebook =================================================================================================
-exports.cekLoginFacebook = async (email, password, cb) => {
+exports.loginFacebook = async (email, password, cb) => {
   try {
     const api = await facebookLogin({
       email: email,
@@ -224,7 +224,7 @@ exports.cekLoginFacebook = async (email, password, cb) => {
 
 exports.logoutFacebook = async (token, cb) => {
   try {
-    await login(
+    await facebookLogin2(
       token,
       async(err, api) => {
         if (err) return console.error(err);
@@ -239,7 +239,7 @@ exports.logoutFacebook = async (token, cb) => {
 
 exports.getListChat = async (token, cb) => {
   try {
-    await login(
+    await facebookLogin2(
       token,
       (err, api) => {
         if (err) return console.error(err);

@@ -1,10 +1,10 @@
 var express = require("express");
-const { cekLoginFacebook, getListChat, logoutFacebook, getListChatById, replyChatByUserId } = require("../api");
+const { loginFacebook, getListChat, logoutFacebook, getListChatById, replyChatByUserId } = require("../api");
 var router = express.Router();
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  await cekLoginFacebook(email, password, (login) => {
+  await loginFacebook(email, password, (login) => {
     res.send(login);
   });
 });
