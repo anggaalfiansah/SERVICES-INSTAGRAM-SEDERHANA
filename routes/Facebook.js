@@ -16,13 +16,13 @@ router.post("/logout", async (req, res) => {
   });
 });
 
-router.get("/chat", async (req, res) => {
+router.post("/chat", async (req, res) => {
   const { token } = req.body;
   await getListChat(token, (chat) => {
     res.send(chat);
   });
 });
-router.get("/chat/:id", async (req, res) => {
+router.post("/chat/:id", async (req, res) => {
   const { token } = req.body;
   const threadId = req.params.id
   await getListChatById(token, threadId, (chat) => {
