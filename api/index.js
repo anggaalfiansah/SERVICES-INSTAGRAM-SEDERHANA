@@ -218,7 +218,7 @@ exports.loginFacebook = async (email, password, cb) => {
     const apis = await api.getAppState();
     cb({ message: "Login Sukses", token : {appState: apis} });
   } catch (error) {
-    cb({ message: `Login Gagal`, error: error.error });
+    cb({ message: `Login Gagal, error : ${error.error}`, error: error.error });
   }
 };
 
@@ -233,7 +233,7 @@ exports.logoutFacebook = async (token, cb) => {
       }
     );
   } catch (error) {
-    cb({ message: `Logout Gagal`, error: error.error });
+    cb({ message: `Logout Gagal, error : ${error.error}`, error: error.error });
   }
 };
 
