@@ -216,52 +216,59 @@ exports.loginFacebook = async (email, password, cb) => {
       password: password,
     });
     const apis = await api.getAppState();
-    cb({ message: "Login Sukses", token : {appState: apis} });
+    cb({ message: "Login Sukses", token: { appState: apis } });
   } catch (error) {
     cb({ message: `Login Gagal, error : ${error.error}`, error: error.error });
   }
 };
+// OK
 
 exports.logoutFacebook = async (token, cb) => {
   try {
-    await facebookLogin2(
-      token,
-      async(err, api) => {
-        if (err) return console.error(err);
-        await api.logout()
-        cb({ message: `Logout Sukses`});
-      }
-    );
+    const api = await facebookLogin(token);
+    await api.logout();
+    cb({ message: `Logout Sukses` });
   } catch (error) {
     cb({ message: `Logout Gagal, error : ${error.error}`, error: error.error });
   }
 };
+// OK
 
 exports.getListChat = async (token, cb) => {
   try {
-    await facebookLogin2(
-      token,
-      (err, api) => {
-        if (err) return console.error(err);
-        api.getThreadList(100, null, [], (list) => {
-          cb({ message: "List Chat Berhasil Didapatkan", chat: list });
-        });
-      }
-    );
+    await facebookLogin(token, (err, api) => {
+      if (err) return console.error(err);
+      api.getThreadList(100, null, [], (list) => {
+        cb({ message: "List Chat Berhasil Didapatkan", chat: list });
+      });
+    });
   } catch (error) {
     cb({ message: `List Chat Gagal Didapatkan`, error: error.error });
   }
 };
+// ????
+
+exports.getFriendList = async (token, cb) => {
+  try {
+    const api = await facebookLogin(token);
+    const friends = await api.getFriendsList();
+    cb({ message: `Daftar Teman Berhasil Didapatkan`, friend: friends });
+  } catch (error) {
+    cb({ message: `Daftar Teman Gagal Didapatkan`, error: error.error });
+  }
+};
+// OK
 
 exports.getListChatById = async (token, threadId, cb) => {
   try {
     const api = await facebookLogin(token);
-    const chat = await api.getThreadHistory(threadId,100);
-    cb({ message: "Chat Berhasil Didapatkan", chat :  chat });
+    const chat = await api.getThreadHistory(threadId, 100);
+    cb({ message: "Chat Berhasil Didapatkan", chat: chat });
   } catch (error) {
     cb({ message: `Chat Gagal Didapatkan`, error: error.error });
   }
 };
+// OK
 
 exports.replyChatByUserId = async (token, userId, pesan, cb) => {
   try {
@@ -269,8 +276,9 @@ exports.replyChatByUserId = async (token, userId, pesan, cb) => {
     await api.listen();
     await api.sendMessage({ body: pesan }, userId);
     await api.stopListening();
-    cb({ message: "Pesan Terkirim"});
+    cb({ message: "Pesan Terkirim" });
   } catch (error) {
     cb({ message: `Pesan Tidak Terkirim`, error: error.error });
   }
 };
+// OK

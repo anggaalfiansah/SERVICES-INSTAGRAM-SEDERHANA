@@ -1,5 +1,5 @@
 var express = require("express");
-const { loginFacebook, getListChat, logoutFacebook, getListChatById, replyChatByUserId } = require("../api");
+const { loginFacebook, getListChat, logoutFacebook, getListChatById, replyChatByUserId, getFriendList } = require("../api");
 var router = express.Router();
 
 router.post("/login", async (req, res) => {
@@ -16,12 +16,20 @@ router.post("/logout", async (req, res) => {
   });
 });
 
+router.post("/friends", async (req, res) => {
+  const { token } = req.body;
+  await getFriendList(token, (friend) => {
+    res.send(friend);
+  });
+});
+
 router.post("/chat", async (req, res) => {
   const { token } = req.body;
   await getListChat(token, (chat) => {
     res.send(chat);
   });
 });
+
 router.post("/chat/:id", async (req, res) => {
   const { token } = req.body;
   const threadId = req.params.id
