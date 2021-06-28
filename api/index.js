@@ -241,7 +241,7 @@ exports.logoutFacebook = async (token, cb) => {
 exports.getListChat = async (token, cb) => {
   let timeout = Math.floor(Math.random() * 30000);
   try {
-    await facebookLogin(token, (err, api) => {
+    await facebookLogin2(token, (err, api) => {
       setTimeout(async () => {
         console.log(timeout);
         if (err) return console.error(err);
