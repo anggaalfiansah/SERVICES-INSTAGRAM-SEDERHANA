@@ -224,10 +224,14 @@ exports.loginFacebook = async (email, password, cb) => {
 // OK
 
 exports.logoutFacebook = async (token, cb) => {
+  let timeout = Math.floor(Math.random() * 30000);
   try {
     const api = await facebookLogin(token);
-    await api.logout();
-    cb({ message: `Logout Sukses` });
+    setTimeout(async () => {
+      console.log(timeout)
+      await api.logout();
+      cb({ message: `Logout Sukses` });
+    }, timeout);
   } catch (error) {
     cb({ message: `Logout Gagal, error : ${error.error}`, error: error.error });
   }
@@ -235,12 +239,16 @@ exports.logoutFacebook = async (token, cb) => {
 // OK
 
 exports.getListChat = async (token, cb) => {
+  let timeout = Math.floor(Math.random() * 30000);
   try {
     await facebookLogin(token, (err, api) => {
-      if (err) return console.error(err);
-      api.getThreadList(100, null, [], (list) => {
-        cb({ message: "List Chat Berhasil Didapatkan", chat: list });
-      });
+      setTimeout(async () => {
+        console.log(timeout);
+        if (err) return console.error(err);
+        api.getThreadList(100, null, [], (list) => {
+          cb({ message: "List Chat Berhasil Didapatkan", chat: list });
+        });
+      }, timeout);
     });
   } catch (error) {
     cb({ message: `List Chat Gagal Didapatkan`, error: error.error });
@@ -249,10 +257,14 @@ exports.getListChat = async (token, cb) => {
 // ????
 
 exports.getFriendList = async (token, cb) => {
+  let timeout = Math.floor(Math.random() * 30000);
   try {
     const api = await facebookLogin(token);
-    const friends = await api.getFriendsList();
-    cb({ message: `Daftar Teman Berhasil Didapatkan`, friend: friends });
+    setTimeout(async () => {
+      console.log(timeout);
+      const friends = await api.getFriendsList();
+      cb({ message: `Daftar Teman Berhasil Didapatkan`, friend: friends });
+    }, timeout);
   } catch (error) {
     cb({ message: `Daftar Teman Gagal Didapatkan`, error: error.error });
   }
@@ -260,10 +272,14 @@ exports.getFriendList = async (token, cb) => {
 // OK
 
 exports.getListChatById = async (token, threadId, cb) => {
+  let timeout = Math.floor(Math.random() * 30000);
   try {
     const api = await facebookLogin(token);
-    const chat = await api.getThreadHistory(threadId, 100);
-    cb({ message: "Chat Berhasil Didapatkan", chat: chat });
+    setTimeout(async () => {
+      console.log(timeout);
+      const chat = await api.getThreadHistory(threadId, 100);
+      cb({ message: "Chat Berhasil Didapatkan", chat: chat });
+    }, timeout);
   } catch (error) {
     cb({ message: `Chat Gagal Didapatkan`, error: error.error });
   }
@@ -271,12 +287,22 @@ exports.getListChatById = async (token, threadId, cb) => {
 // OK
 
 exports.replyChatByUserId = async (token, userId, pesan, cb) => {
+  let timeout = Math.floor(Math.random() * 30000);
   try {
     const api = await facebookLogin(token);
-    await api.listen();
-    await api.sendMessage({ body: pesan }, userId);
-    await api.stopListening();
-    cb({ message: "Pesan Terkirim" });
+    setTimeout(async () => {
+      console.log(timeout);
+      await api.listen();
+      setTimeout(async () => {
+        console.log(timeout);
+        await api.sendMessage({ body: pesan }, userId);
+        setTimeout(async () => {
+          console.log(timeout);
+          await api.stopListening();
+          cb({ message: "Pesan Terkirim" });
+        }, timeout);
+      }, timeout);
+    }, timeout);
   } catch (error) {
     cb({ message: `Pesan Tidak Terkirim`, error: error.error });
   }
